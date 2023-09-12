@@ -45,6 +45,8 @@ public class GameManager : MonoBehaviour
 
     private LevelCondition m_levelCondition;
 
+    private eLevelMode m_lastModePlayed;
+
     private void Awake()
     {
         State = eStateGame.SETUP;
@@ -66,6 +68,11 @@ public class GameManager : MonoBehaviour
         if (m_boardController != null) m_boardController.ManualUpdate(Time.deltaTime);
     }
 
+    public void RestartLevel()
+    {
+        ClearLevel();
+        LoadLevel(m_lastModePlayed);
+    }
 
     internal void SetState(eStateGame state)
     {
@@ -85,6 +92,8 @@ public class GameManager : MonoBehaviour
     {
         m_boardController = new GameObject("BoardController").AddComponent<BoardController>();
         m_boardController.StartGame(this, m_gameSettings);
+
+        m_lastModePlayed = mode;
 
         if (mode == eLevelMode.MOVES)
         {
@@ -109,6 +118,16 @@ public class GameManager : MonoBehaviour
 
     internal void ClearLevel()
     {
+        if (m_levelCondition != null)
+        {
+            m_levelCondition.ConditionCompleteEvent -= GameOver;
+
+            Destroy(m_levelCondition);
+            m_levelCondition = null;
+
+            SetState(eStateGame.GAME_OVER);
+        }
+
         if (m_boardController)
         {
             m_boardController.Clear();
@@ -126,14 +145,6 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        State = eStateGame.GAME_OVER;
-
-        if (m_levelCondition != null)
-        {
-            m_levelCondition.ConditionCompleteEvent -= GameOver;
-
-            Destroy(m_levelCondition);
-            m_levelCondition = null;
-        }
+        ClearLevel();
     }
 }
