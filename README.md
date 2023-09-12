@@ -17,4 +17,4 @@ Dự án có một số ưu điểm và nhược điểm quan trọng:
 
 + Tài liệu hóa: Đảm bảo rằng dự án có tài liệu hóa đầy đủ về mã nguồn, cấu trúc dự án và các quy trình. Điều này giúp đội ngũ phát triển hiện tại và tương lai dễ dàng hiểu và duy trì dự án.
 Mở rộng dự án: Nếu có kế hoạch mở rộng dự án trong tương lai, xem xét việc thay đổi cấu trúc mã nguồn để làm cho dự án linh hoạt hơn và dễ dàng mở rộng.
-+ Ưu tiên hiệu suất: Nếu dự án có thể phải xử lý dữ liệu lớn hoặc tải nhiều, có thể xem xét sử dụng các công nghệ như JobSystem, MultiThread để đảm bảo rằng dự án có thể đáp ứng các yêu cầu về hiệu suất trong tương lai.
++ Ưu tiên hiệu suất: Nếu dự án có thể phải xử lý dữ liệu lớn hoặc tải nhiều, có thể xem xét sử dụng các công nghệ như JobSystem, MultiThread, tối ưu Texture bằng Atlas để đảm bảo rằng dự án có thể đáp ứng các yêu cầu về hiệu suất trong tương lai.
