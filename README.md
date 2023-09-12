@@ -1,20 +1,24 @@
 # Match3-Unity-Game
 
-Dự án có một số ưu điểm và nhược điểm quan trọng:
+The project has several key advantages and disadvantages:
 
-#### Ưu điểm:
+#### Advantages:
 
-+ Đơn giản và Tiết kiệm thời gian: Dự án sử dụng mã đơn giản để quản lý và thực thi logic, giúp tiết kiệm thời gian trong quá trình phát triển và bảo trì.
-+ Chi phí thấp: Sự đơn giản trong thiết kế và triển khai có thể giảm thiểu các chi phí phát triển và duy trì dự án.
-+ Dễ hiểu: Mã nguồn đơn giản và tổ chức cũng giúp cho dự án dễ hiểu và dễ quản lý.
++ Simplicity and Time Savings: The project uses simple code to manage and execute logic, saving time in development and maintenance.
++ Cost-Effective: The simplicity in design and implementation can reduce development and project maintenance costs.
++ Understandability: Simple source code and organization make the project easy to understand and manage.
 
-#### Nhược điểm:
+#### Disadvantages:
 
-+ Khả năng mở rộng hạn chế: Dự án có thể gặp khó khăn khi cần mở rộng và thêm nhiều tính năng mới vào trong tương lai. Điều này có thể dẫn đến việc cần phải thay đổi cấu trúc mã nguồn hiện tại, gây ra rủi ro về lỗi và sự cố.
-+ Tài liệu hạn chế: Nếu không được tài liệu hóa tốt hoặc thiếu sự truyền đạt kiến thức về dự án cho đội ngũ phát triển, việc duy trì và phát triển dự án có thể gặp khó khăn khi có sự thay đổi trong đội ngũ hoặc cần sửa lỗi.
++ Limited Scalability: The project may face challenges when it needs to expand and add many new features in the future. This could require changing the current source code structure, leading to risks of errors and issues.
++ Limited Documentation: Without proper documentation or knowledge transfer to the development team, maintaining and evolving the project may become difficult in the event of team changes or bug fixes.
 
-#### Đề xuất:
+#### Recommendations:
 
-+ Tài liệu hóa: Đảm bảo rằng dự án có tài liệu hóa đầy đủ về mã nguồn, cấu trúc dự án và các quy trình. Điều này giúp đội ngũ phát triển hiện tại và tương lai dễ dàng hiểu và duy trì dự án.
-Mở rộng dự án: Nếu có kế hoạch mở rộng dự án trong tương lai, xem xét việc thay đổi cấu trúc mã nguồn để làm cho dự án linh hoạt hơn và dễ dàng mở rộng.
-+ Ưu tiên hiệu suất: Nếu dự án có thể phải xử lý dữ liệu lớn hoặc tải nhiều, có thể xem xét sử dụng các công nghệ như JobSystem, MultiThread, tối ưu Texture bằng Atlas để đảm bảo rằng dự án có thể đáp ứng các yêu cầu về hiệu suất trong tương lai.
++ Documentation: Ensure that the project has comprehensive documentation covering source code, project structure, and processes. This helps both the current and future development teams easily understand and maintain the project.
++ Project Expansion: If there are plans to expand the project in the future, consider modifying the source code structure to make the project more flexible and easily expandable.
++ Performance Priority: If the project may need to handle large data or heavy loads, consider using technologies such as JobSystem, MultiThread, and optimizing textures with Atlases to ensure the project can meet future performance requirements.
+
+
+
+
