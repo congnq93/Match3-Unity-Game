@@ -31,6 +31,10 @@ public class BoardController : MonoBehaviour
 
     private bool m_gameOver;
 
+    private RaycastHit2D[] m_raycastHits = new RaycastHit2D[1];
+
+    private Cell c1, c2;
+
     public void StartGame(GameManager gameManager, GameSettings gameSettings)
     {
         m_gameManager = gameManager;
@@ -70,14 +74,14 @@ public class BoardController : MonoBehaviour
     }
 
 
-    public void Update()
+    public void ManualUpdate(float deltaTime)
     {
         if (m_gameOver) return;
         if (IsBusy) return;
 
         if (!m_hintIsShown)
         {
-            m_timeAfterFill += Time.deltaTime;
+            m_timeAfterFill += deltaTime;
             if (m_timeAfterFill > m_gameSettings.TimeForHint)
             {
                 m_timeAfterFill = 0f;
@@ -85,13 +89,16 @@ public class BoardController : MonoBehaviour
             }
         }
 
+        bool isPointerHit = Physics2D.RaycastNonAlloc(m_cam.ScreenToWorldPoint(Input.mousePosition),
+            Vector2.zero, m_raycastHits) > 0;
+        var pointerHitInfo = isPointerHit ? m_raycastHits[0] : default;
+
         if (Input.GetMouseButtonDown(0))
         {
-            var hit = Physics2D.Raycast(m_cam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit.collider != null)
+            if (pointerHitInfo.collider != null)
             {
                 m_isDragging = true;
-                m_hitCollider = hit.collider;
+                m_hitCollider = pointerHitInfo.collider;
             }
         }
 
@@ -102,23 +109,19 @@ public class BoardController : MonoBehaviour
 
         if (Input.GetMouseButton(0) && m_isDragging)
         {
-            var hit = Physics2D.Raycast(m_cam.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (hit.collider != null)
+            if (pointerHitInfo.collider != null)
             {
-                if (m_hitCollider != null && m_hitCollider != hit.collider)
+                if (m_hitCollider != null && m_hitCollider != pointerHitInfo.collider)
                 {
                     StopHints();
 
-                    Cell c1 = m_hitCollider.GetComponent<Cell>();
-                    Cell c2 = hit.collider.GetComponent<Cell>();
+                    c1 = m_hitCollider.GetComponent<Cell>();
+                    c2 = pointerHitInfo.collider.GetComponent<Cell>();
                     if (AreItemsNeighbor(c1, c2))
                     {
                         IsBusy = true;
                         SetSortingLayer(c1, c2);
-                        m_board.Swap(c1, c2, () =>
-                        {
-                            FindMatchesAndCollapse(c1, c2);
-                        });
+                        m_board.Swap(c1, c2, SwapCellCallback);
 
                         ResetRayCast();
                     }
@@ -129,6 +132,11 @@ public class BoardController : MonoBehaviour
                 ResetRayCast();
             }
         }
+    }
+
+    void SwapCellCallback()
+    {
+        FindMatchesAndCollapse(c1, c2);
     }
 
     private void ResetRayCast()
