@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static NormalItem;
 
 public class Board
 {
@@ -136,8 +137,35 @@ public class Board
     }
 
 
+    //internal void FillGapsWithNewItems()
+    //{
+    //    for (int x = 0; x < boardSizeX; x++)
+    //    {
+    //        for (int y = 0; y < boardSizeY; y++)
+    //        {
+    //            Cell cell = m_cells[x, y];
+    //            if (!cell.IsEmpty) continue;
+
+    //            NormalItem item = new NormalItem();
+
+    //            item.SetType(Utils.GetRandomNormalType());
+    //            item.SetView();
+    //            item.SetViewRoot(m_root);
+
+    //            cell.Assign(item);
+    //            cell.ApplyItemPosition(true);
+    //        }
+    //    }
+    //}
+
+    #region FillGapsWithNewItems (Refactored)
     internal void FillGapsWithNewItems()
     {
+        Dictionary<eNormalType, int> itemTypeCounts = new Dictionary<eNormalType, int>();
+
+        // Count the occurrences of each item type on the entire board
+        CountItemTypesOnBoard(itemTypeCounts);
+
         for (int x = 0; x < boardSizeX; x++)
         {
             for (int y = 0; y < boardSizeY; y++)
@@ -145,17 +173,99 @@ public class Board
                 Cell cell = m_cells[x, y];
                 if (!cell.IsEmpty) continue;
 
-                NormalItem item = new NormalItem();
+                // Find the least occurring item type on the entire board
+                eNormalType leastOccurringType = GetLeastOccurringType(itemTypeCounts);
 
-                item.SetType(Utils.GetRandomNormalType());
+                // Create a new item of the least occurring type
+                NormalItem item = new NormalItem();
+                item.SetType(leastOccurringType);
                 item.SetView();
                 item.SetViewRoot(m_root);
 
+                // Assign it to the cell
                 cell.Assign(item);
                 cell.ApplyItemPosition(true);
+
+                // Update the counts after adding the new item
+                UpdateItemTypeCounts(itemTypeCounts, leastOccurringType);
+
+                // Update the counts for the surrounding cells
+                if (x > 0) UpdateItemTypeCounts(itemTypeCounts, GetItemTypeOfCell(x - 1, y));
+                if (x < boardSizeX - 1) UpdateItemTypeCounts(itemTypeCounts, GetItemTypeOfCell(x + 1, y));
+                if (y > 0) UpdateItemTypeCounts(itemTypeCounts, GetItemTypeOfCell(x, y - 1));
+                if (y < boardSizeY - 1) UpdateItemTypeCounts(itemTypeCounts, GetItemTypeOfCell(x, y + 1));
             }
         }
     }
+
+    // Helper method to count the occurrences of each item type on the entire board
+    private void CountItemTypesOnBoard(Dictionary<eNormalType, int> itemTypeCounts)
+    {
+        for (int x = 0; x < boardSizeX; x++)
+        {
+            for (int y = 0; y < boardSizeY; y++)
+            {
+                Cell cell = m_cells[x, y];
+                if (!cell.IsEmpty)
+                {
+                    NormalItem item = cell.Item as NormalItem;
+                    eNormalType itemType = item != null? item.ItemType: Utils.GetRandomNormalType();
+
+                    if (itemTypeCounts.ContainsKey(itemType))
+                    {
+                        itemTypeCounts[itemType]++;
+                    }
+                    else
+                    {
+                        itemTypeCounts[itemType] = 1;
+                    }
+                }
+            }
+        }
+    }
+
+    // Helper method to find the least occurring item type on the entire board
+    private eNormalType GetLeastOccurringType(Dictionary<eNormalType, int> itemTypeCounts)
+    {
+        int minCount = int.MaxValue;
+        eNormalType leastOccurringType = eNormalType.TYPE_ONE; // Default to the first type if needed.
+
+        foreach (var kvp in itemTypeCounts)
+        {
+            if (kvp.Value < minCount)
+            {
+                minCount = kvp.Value;
+                leastOccurringType = kvp.Key;
+            }
+        }
+
+        return leastOccurringType;
+    }
+
+    // Helper method to update the item type counts
+    private void UpdateItemTypeCounts(Dictionary<eNormalType, int> itemTypeCounts, eNormalType type)
+    {
+        if (itemTypeCounts.ContainsKey(type))
+        {
+            itemTypeCounts[type]++;
+        }
+        else
+        {
+            itemTypeCounts[type] = 1;
+        }
+    }
+
+    // Helper method to get the type of item in a specific cell
+    private eNormalType GetItemTypeOfCell(int x, int y)
+    {
+        if (!m_cells[x, y].IsEmpty)
+        {
+            NormalItem item = m_cells[x, y].Item as NormalItem;
+            return item != null? item.ItemType: Utils.GetRandomNormalType();
+        }
+        return Utils.GetRandomNormalType(); // Return a default type if the cell is empty (you can change this as needed).
+    }
+    #endregion
 
     internal void ExplodeAllItems()
     {
